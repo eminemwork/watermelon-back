@@ -2,7 +2,10 @@ package com.example.watermelon;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 @SpringBootApplication
 public class WatermelonApplication {
 
@@ -10,4 +13,8 @@ public class WatermelonApplication {
         SpringApplication.run(WatermelonApplication.class, args);
     }
 
+    @GetMapping(path = "/")
+    public String Hello() {
+        return "Hello Docker World";
+    }
 }

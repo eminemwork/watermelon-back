@@ -1,0 +1,25 @@
+language: java
+
+jdk:
+  - openjdk8
+
+services:
+  - docker
+
+branches:
+  only:
+    - master
+
+jobs:
+  include:
+    - stage: "DEPLOY"
+      name: "DEPLOY BACK"
+      if: type = push AND branch = master
+      before_install:
+        - sudo apt-get install sshpass
+      before_script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+      script:
+        - docker build -t eminem54/watermelon-back:latest .
+        - docker push "$DOCKER_USERNAME"/"$DOCKER_BACK_REPO":latest
+        - sshpass -p "$DEVELOPER_PASSWORD" ssh -o StrictHostKeyChecking=no root@$BACK_IP "/home/deploy-watermelon-back.sh"
