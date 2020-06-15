@@ -1,5 +1,6 @@
 package com.example.watermelon.web;
 
+import com.example.watermelon.dto.ChartResponseDto;
 import com.example.watermelon.service.ChartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,7 @@ public class ChartController {
     ChartService chartService;
 
     @GetMapping(path = "/chart")
-    public List<HashMap<String,String>> Chart() {
+    public List<ChartResponseDto> Chart() {
         return chartService.getChartList();
     }
 }

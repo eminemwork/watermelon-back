@@ -1,5 +1,6 @@
 package com.example.watermelon.service;
 
+import com.example.watermelon.dto.ChartResponseDto;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,8 +20,8 @@ import java.util.List;
 @Service
 public class ChartService {
 
-    public List<HashMap<String,String>> getChartList() {
-        List<HashMap<String, String>> result = new ArrayList<>();
+    public List<ChartResponseDto> getChartList() {
+        List<ChartResponseDto> result = new ArrayList<>();
         String url = "https://www.melon.com/chart/index.htm";
         String likeUrl = "https://www.melon.com/commonlike/getSongLike.json?contsIds=";
         HttpClient client = HttpClient.newHttpClient();
@@ -52,15 +53,14 @@ public class ChartService {
                 }
 
                 Element info = cols.get(5).select("div.wrap_song_info").get(0);
+                String rank = cols.get(1).text();
                 String title = info.select("div.rank01").get(0).text();
                 String singer = info.select("span.checkEllipsis").get(0).text();
-                data.put("rank", cols.get(1).text());
-                data.put("title", title);
-                data.put("singer", singer);
-                data.put("album", cols.get(6).text());
-                data.put("like", Integer.toString(songLike));
+                String album = cols.get(6).text();
 
-                result.add(data);
+                ChartResponseDto song = ChartResponseDto.builder().rank(rank).title(title).singer(singer).album(album).like(songLike).build();
+
+                result.add(song);
             }
         } catch (IOException e) {
             System.out.println("페이지를 가져 올 수 없습니다.");
