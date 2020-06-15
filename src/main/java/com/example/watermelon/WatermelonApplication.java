@@ -13,7 +13,7 @@ public class WatermelonApplication {
         SpringApplication.run(WatermelonApplication.class, args);
     }
 
-    @GetMapping(path = "/")
+    @GetMapping(path = "/hello")
     public String Hello() {
         return "Hello Docker World";
     }
