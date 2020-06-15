@@ -15,6 +15,6 @@ public class ChartController {
 
     @GetMapping(path = "/chart")
     public List<HashMap<String,String>> Chart() {
-        return chartService.crawlChart();
+        return chartService.getChartList();
     }
 }

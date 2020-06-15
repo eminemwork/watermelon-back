@@ -1,11 +1,11 @@
 package com.example.watermelon.service;
 
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import org.json.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,14 +13,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class ChartService {
 
-    public List<HashMap<String,String>> crawlChart() {
+    public List<HashMap<String,String>> getChartList() {
         List<HashMap<String, String>> result = new ArrayList<>();
         String url = "https://www.melon.com/chart/index.htm";
         String likeUrl = "https://www.melon.com/commonlike/getSongLike.json?contsIds=";
@@ -52,9 +51,12 @@ public class ChartService {
                     return result;
                 }
 
+                Element info = cols.get(5).select("div.wrap_song_info").get(0);
+                String title = info.select("div.rank01").get(0).text();
+                String singer = info.select("span.checkEllipsis").get(0).text();
                 data.put("rank", cols.get(1).text());
-                data.put("title", cols.get(5).text().split(" ")[0]);
-                data.put("singer", cols.get(5).text().split(" ")[1]);
+                data.put("title", title);
+                data.put("singer", singer);
                 data.put("album", cols.get(6).text());
                 data.put("like", Integer.toString(songLike));
 
