@@ -1,21 +1,20 @@
 package com.example.watermelon.web;
 
-import com.example.watermelon.dto.ChartResponseDto;
-import com.example.watermelon.service.ChartService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
-import sun.net.www.http.HttpClient;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.example.watermelon.dto.ChartResponseDto;
+import com.example.watermelon.service.ChartService;
+import org.json.JSONObject;
 
 @RestController
 public class ChartController {
@@ -47,7 +46,21 @@ public class ChartController {
                 body.toString(),
                 String.class);
 
+
+        final JSONObject json = new JSONObject(stringResponseEntity.getBody());
+        final Object token = json.get("access_token");
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        final HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = new RestTemplate().exchange(
+                "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+                HttpMethod.GET,
+                entity,
+                String.class);
+
         return ResponseEntity.ok()
-                             .body(stringResponseEntity);
+                             .body("your information: ====================\n" + response.getBody());
     }
 }
